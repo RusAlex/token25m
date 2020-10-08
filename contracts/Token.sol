@@ -37,6 +37,7 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
     // low level token purchase function
     receive() external payable {
         require(msg.sender != address(0));
+        require(msg.value >= 1 * 10 ** 18);
 
         uint256 weiAmount = msg.value;
         // calculate token amount to be created
