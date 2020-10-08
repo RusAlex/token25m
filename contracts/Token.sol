@@ -1,28 +1,15 @@
 // contracts/GLDToken.sol
 // SPDX-License-Identifier: MIT
 
-/*
-
-ERC20 - solidity contract features
-
-- Total supply X amount
-- ICO (40% preminted, 60 % for ICO)
-- Vesting period X amount, lets say 3 months for now
-- ICO stops when 60% of ICO tokens are sold.
-- Purchasing token function (X amounts of ETH spent grants X amount of extra tokens), (vesting bonus function in milestone 2, the percentage of bonus tokens is within those 60%, for example, 40% are purchased and 20% is vesting bonus on top of that).
-- Burn mechanism
-- Source code must be properly commented so that we all can easily read through code and add more functions/change parameters if required.
-
-*/
-
 pragma solidity 0.6.2;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-contract Token is ERC20Capped, Ownable {
+contract Token is ERC20Capped, Ownable, ERC20Burnable {
     using SafeMath for uint256;
 
     // how many token units a buyer gets per wei
@@ -32,7 +19,7 @@ contract Token is ERC20Capped, Ownable {
 
     constructor() public ERC20("Grem", "Grm") ERC20Capped(25000000 * (10 ** 18)) {
         // init predefined address distribution
-        _mint(msg.sender, SafeMath.mul(10000000,(10**18)));
+        _mint(msg.sender, 10000000 * 10**18);
     }
 
     function finishCrowdSale() public onlyOwner  {
@@ -68,7 +55,7 @@ contract Token is ERC20Capped, Ownable {
      *
      * crowdsale should be closed now
      */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override(ERC20Capped, ERC20) {
         super._beforeTokenTransfer(from, to, amount);
 
         if (from != address(0)) { // When transferring tokens not minting

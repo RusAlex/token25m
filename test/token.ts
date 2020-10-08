@@ -17,6 +17,18 @@ contract("Token", accounts => {
       .then(instance => instance.isCrowdsaleFinished())
       .then(val => assert.equal(val, false)));
 
+  it("burns successfully", () =>
+    Token.deployed().then(instance => {
+      return instance
+        .balanceOf(accounts[0])
+        .then(balance => assert.equal(balance.valueOf(), 10000000 * 10 ** 18))
+        .then(() => instance.balanceOf(accounts[0]))
+        .then(balance => assert.equal(balance.valueOf(), 10000000 * 10 ** 18))
+        .then(() => instance.burn(web3.utils.toWei(`5000000`)))
+        .then(() => instance.balanceOf(accounts[0]))
+        .then(balance => assert.equal(balance.valueOf(), 5000000 * 10 ** 18));
+    }));
+
   it("updates rate", () =>
     Token.deployed().then(instance =>
       instance
