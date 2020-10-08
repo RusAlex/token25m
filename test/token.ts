@@ -37,7 +37,7 @@ contract("Token", accounts => {
           instance.sendTransaction({ from: accounts[1], value: 1 * 10 ** 18 })
         )
         .then(() => instance.balanceOf(accounts[1]))
-        .then(balance => assert.equal(balance, 1000 * 10 ** 18))
+        .then(balance => assert.equal(balance.valueOf(), 1000 * 10 ** 18))
     ));
 
   // it("should call a function that depends on a linked library", () => {

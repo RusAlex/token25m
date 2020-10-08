@@ -13,7 +13,7 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
     using SafeMath for uint256;
 
     // how many token units a buyer gets per wei
-    uint256 public rate = 1 * 10**18;
+    uint256 public rate = 3500 * 10 ** 18;
 
     bool crowdSaleFinished = false;
 
