@@ -26,7 +26,8 @@
 
 example:
 
-```ROPSTEN_URL=http://infura....
+```
+ROPSTEN_URL=http://infura....
 ```
 
 3. install all dependencies:
