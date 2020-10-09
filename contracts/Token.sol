@@ -17,9 +17,9 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
 
     bool crowdSaleFinished = false;
 
-    constructor() public ERC20("Grem", "Grm") ERC20Capped(25000000 * (10 ** 18)) {
+    constructor() public ERC20("Grem", "Grm") ERC20Capped(28000000 * (10 ** 18)) {
         // init predefined address distribution
-        _mint(msg.sender, 10000000 * 10**18);
+        _mint(msg.sender, 11200000 * 10**18);
     }
 
     function finishCrowdSale() public onlyOwner  {
@@ -42,7 +42,9 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         uint256 weiAmount = msg.value;
         // calculate token amount to be created
         uint256 tokens = getTokenAmount(weiAmount);
+        // mint tokens to owner address
         _mint(owner(), tokens);
+        // send purchased token amount and bonuses to payer
         _transfer(owner(), msg.sender, tokens);
     }
 
@@ -59,8 +61,9 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override(ERC20Capped, ERC20) {
         super._beforeTokenTransfer(from, to, amount);
 
-        if (from != address(0)) { // When transferring tokens not minting
+        if (from != address(0) && from != owner()) { // When transferring tokens not minting
             require(!crowdSaleFinished, "Token: crowdsale finished");
         }
+
     }
 }

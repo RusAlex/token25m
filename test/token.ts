@@ -7,7 +7,7 @@ contract("Token", accounts => {
       .then(balance => {
         assert.equal(
           balance.valueOf(),
-          10000000 * 10 ** 18,
+          11200000 * 10 ** 18,
           "On the owner account there are 10M tokens"
         );
       }));
@@ -15,18 +15,27 @@ contract("Token", accounts => {
   it("crowdsale should not be fineshed", () =>
     Token.deployed()
       .then(instance => instance.isCrowdsaleFinished())
-      .then(val => assert.equal(val, false)));
+      .then(val =>
+        assert.equal(val, false, "Crowdsale is not finished on init")
+      ));
 
   it("burns successfully", () =>
     Token.deployed().then(instance => {
       return instance
         .balanceOf(accounts[0])
-        .then(balance => assert.equal(balance.valueOf(), 10000000 * 10 ** 18))
-        .then(() => instance.balanceOf(accounts[0]))
-        .then(balance => assert.equal(balance.valueOf(), 10000000 * 10 ** 18))
+        .then(balance =>
+          assert.equal(
+            balance.valueOf(),
+            11200000 * 10 ** 18,
+            "init owner balance is 10M"
+          )
+        )
         .then(() => instance.burn(web3.utils.toWei(`5000000`)))
         .then(() => instance.balanceOf(accounts[0]))
-        .then(balance => assert.equal(balance.valueOf(), 5000000 * 10 ** 18));
+        .then(
+          balance => assert.equal(balance.valueOf(), 6200000 * 10 ** 18),
+          "new owner balance is 5M"
+        );
     }));
 
   it("updates rate", () =>
