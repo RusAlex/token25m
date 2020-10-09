@@ -16,10 +16,12 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
     uint256 public rate = 3500 * 10 ** 18;
 
     bool crowdSaleFinished = false;
+    uint256 start;
 
     constructor() public ERC20("Grem", "Grm") ERC20Capped(28000000 * (10 ** 18)) {
         // init predefined address distribution
         _mint(msg.sender, 11200000 * 10**18);
+        start = now;
     }
 
     function finishCrowdSale() public onlyOwner  {
@@ -62,6 +64,7 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         super._beforeTokenTransfer(from, to, amount);
 
         if (from != address(0) && from != owner()) { // When transferring tokens not minting
+            require(now > start + 30 days, "Transfers are closed till 30 days since contract deploy date");
             require(!crowdSaleFinished, "Token: crowdsale finished");
         }
 
