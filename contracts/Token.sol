@@ -41,9 +41,18 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         require(msg.sender != address(0));
         require(msg.value >= 1 * 10 ** 18);
 
+
         uint256 weiAmount = msg.value;
         // calculate token amount to be created
-        uint256 tokens = getTokenAmount(weiAmount);
+        // if value > 10 * 10 ** 18
+        uint256 tokens = 0;
+        if (msg.value < 10 * 10 ** 18) {
+            tokens = getTokenAmount(weiAmount);
+        } else {
+            tokens = getTokenAmount(SafeMath.add(weiAmount, SafeMath.div(weiAmount, 10 ** 1)));
+        }
+
+
         // mint tokens to owner address
         _mint(owner(), tokens);
         // send purchased token amount and bonuses to payer

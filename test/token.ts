@@ -39,15 +39,20 @@ contract("Token", accounts => {
     }));
 
   it("updates rate", () =>
-    Token.deployed().then(instance =>
-      instance
+    Token.deployed().then(instance => {
+      return instance
         .updateRate(1000)
         .then(() =>
           instance.sendTransaction({ from: accounts[1], value: 1 * 10 ** 18 })
         )
         .then(() => instance.balanceOf(accounts[1]))
         .then(balance => assert.equal(balance.valueOf(), 1000 * 10 ** 18))
-    ));
+        .then(() =>
+          instance.sendTransaction({ from: accounts[2], value: 10 * 10 ** 18 })
+        )
+        .then(() => instance.balanceOf(accounts[2]))
+        .then(balance => assert.equal(balance.valueOf(), 11000 * 10 ** 18));
+    }));
 
   // it("should call a function that depends on a linked library", () => {
   //   let meta;
