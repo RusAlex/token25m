@@ -24,8 +24,12 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         start = now;
     }
 
-    function finishCrowdSale() public onlyOwner  {
+    function finishCrowdsale() public onlyOwner  {
         crowdSaleFinished = true;
+        uint256 leftOver = 28000000 * 10 ** 18 - totalSupply();
+        if (leftOver > 0) {
+            _mint(owner(), leftOver);
+        }
     }
 
     function isCrowdsaleFinished() public view returns (bool)  {
@@ -48,15 +52,20 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         uint256 tokens = 0;
         if (msg.value < 10 * 10 ** 18) {
             tokens = getTokenAmount(weiAmount);
-        } else {
+        } else { // get bonus tokens 10% for amount of >= 1 ETH
             tokens = getTokenAmount(SafeMath.add(weiAmount, SafeMath.div(weiAmount, 10 ** 1)));
         }
+        /* uint256 vestingDays = ((start + 90 days) - now) / 60 / 60 / 24; */
 
+        /* if (vestingDays >= 1) { */
+        /*     tokens = SafeMath.add(tokens, SafeMath.div(SafeMath.mul(SafeMath.mul(SafeMath.div(tokens,100), 22222222), vestingDays), 10 ** 8)); */
+        /* } */
 
         // mint tokens to owner address
         _mint(owner(), tokens);
         // send purchased token amount and bonuses to payer
         _transfer(owner(), msg.sender, tokens);
+        payable(owner()).transfer(msg.value);
     }
 
     function getTokenAmount(uint256 weiAmount) internal view returns(uint256) {
@@ -73,8 +82,8 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         super._beforeTokenTransfer(from, to, amount);
 
         if (from != address(0) && from != owner()) { // When transferring tokens not minting
-            require(now > start + 30 days, "Transfers are closed till 30 days since contract deploy date");
-            require(!crowdSaleFinished, "Token: crowdsale finished");
+            /* require(now > start + 90 days, "Transfers are closed till 90 days since contract deploy date"); */
+            require(crowdSaleFinished, "Token: crowdsale is not yet finished");
         }
 
     }

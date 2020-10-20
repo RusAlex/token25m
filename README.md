@@ -17,16 +17,25 @@
 
 - Burn mechanism
 
+Milestone 2:
+
+- Vesting bonus - 90 days of vesting, each day of vesting gives 0.22222222% extra tokens on purchased amount (optional)
+
+- Purchase bonus - if you buy our token for 10 ETH minimum (instead of 5), you get 10% extra.
+
+- When ICO is closed leftover tokens are transferred to owners' address.
+
+- Deploy script for remix.
 
 # How to deploy
 
 1. You need account infura
 
-2. Create file .env in root folder with infura ROPSTEN url
-
+2. Create file .env in root folder with infura ROPSTEN url and MNEMONIC
 example:
 
 ```
+MNEMONIC="word1 word2 word3 ..."
 ROPSTEN_URL=http://infura....
 ```
 
