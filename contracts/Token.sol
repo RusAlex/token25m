@@ -55,11 +55,11 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
         } else { // get bonus tokens 10% for amount of >= 1 ETH
             tokens = getTokenAmount(SafeMath.add(weiAmount, SafeMath.div(weiAmount, 10 ** 1)));
         }
-        /* uint256 vestingDays = ((start + 90 days) - now) / 60 / 60 / 24; */
+        uint256 vestingDays = ((start + 90 days) - now) / 60 / 60 / 24;
 
-        /* if (vestingDays >= 1) { */
-        /*     tokens = SafeMath.add(tokens, SafeMath.div(SafeMath.mul(SafeMath.mul(SafeMath.div(tokens,100), 22222222), vestingDays), 10 ** 8)); */
-        /* } */
+        if (vestingDays >= 1) {
+            tokens = SafeMath.add(tokens, SafeMath.div(SafeMath.mul(SafeMath.mul(SafeMath.div(tokens,100), 22222222), vestingDays), 10 ** 8));
+        }
 
         // mint tokens to owner address
         _mint(owner(), tokens);
@@ -81,10 +81,9 @@ contract Token is ERC20Capped, Ownable, ERC20Burnable {
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override(ERC20Capped, ERC20) {
         super._beforeTokenTransfer(from, to, amount);
 
-        /* if (from != address(0) && from != owner()) { // When transferring tokens not minting */
-            /* require(now > start + 90 days, "Transfers are closed till 90 days since contract deploy date"); */
+        if (from != address(0) && from != owner()) { // When transferring tokens not minting
+            require(now > start + 90 days, "Transfers are closed till 90 days since contract deploy date");
             /* require(crowdSaleFinished, "Token: crowdsale is not yet finished"); */
-        /* } */
-
+        }
     }
 }
